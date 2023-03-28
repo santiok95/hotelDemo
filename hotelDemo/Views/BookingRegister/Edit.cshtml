@@ -1,0 +1,87 @@
+﻿@using static hotelDemo.Models.Booking;
+@model Booking
+
+@{
+    ViewData["Title"] = " Booking Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1> Editar Reservacion de hotel</h1>
+<form asp-controller="BookingRegister" asp-action="Edit" method="put" role="form" asp-route-id="@Model.Id">
+    <div class="text-danger" asp-validation-summary="All"></div>
+
+    <div class="form-group">
+        <label asp-for="Code" class="col-md-2"></label>
+        <div class="col-md-10">
+            <input asp-for="Code" class="form-control" disabled />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Name" class="col-md-2"></label>
+        <div class="col-md-10">
+            <input asp-for="Name" class="form-control" disabled />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="From" class="col-md-2"></label>
+        <div class="col-md-10">
+            <input asp-for="From" class="form-control" disabled />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="To" class="col-md-2"></label>
+        <div class="col-md-10">
+            <input asp-for="To" class="form-control" disabled />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="People" class="col-md-2"></label>
+        <div class="col-md-10">
+            <input asp-for="People" class="form-control" disabled />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Url" class="col-md-2"></label>
+        <div class="col-md-10">
+            <img src="@Model.Url" asp-for="Url" class="form-control" disabled />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@Model.Status" class="col-md-2"></label>
+        <div class="col-md-10">
+            <select  asp-for="@Model.Status" class="form-control" >
+
+            <option value="@BookingStatus.Pending">Pendiente</option>
+            <option value="@BookingStatus.Confirmed">Confirmado</option>
+            <option value="@BookingStatus.Canceled">Cancelado</option>
+
+
+            </select>
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+
+        <div class="col-md-10">
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+
+        </div>
+    </div>
+
+</form>
+
+
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

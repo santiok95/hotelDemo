@@ -1,0 +1,60 @@
+﻿@model IEnumerable<hotelDemo.Models.Booking>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th> Codigo </th>
+            <th> Nombre </th>
+            <th> Desde </th>
+            <th> Hasta </th>
+            <th> Cantidad de Personas </th>
+            <th> Estado </th>
+         
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.Code</td>
+
+                <td>@item.Name</td>
+
+                <td>@item.From.ToString("dd/MM/yyyy")</td>
+
+                <td>@item.To.ToString("dd/MM/yyyy")</td>
+
+                <td>@item.People</td>
+
+                <td>@switch (item.Status)
+                    { case Booking.BookingStatus.Pending
+                         :
+                            <p>Pendiente</p>
+                            ;
+                            break;
+                        case Booking.BookingStatus.Confirmed:
+                            <p>Confirmado</p>
+                            ;
+
+                            break;
+                        case Booking.BookingStatus.Canceled:
+                            <p>Cancelado</p>
+                            ;
+                            break;
+
+                    }
+                </td>
+
+
+            </tr>
+
+        }
+    </tbody>
+</table>
+
