@@ -51,7 +51,7 @@ namespace hotelDemo.Controllers
 
         }
 
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> Edit(Guid Id, Booking booking)
         {
             var result = await _context.Bookings.SingleOrDefaultAsync(x => x.Id == Id);
@@ -63,7 +63,7 @@ namespace hotelDemo.Controllers
             _context.Bookings.Update(result);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "BookingRegister");
         }
         [HttpGet]
         public async Task<IActionResult> Edit(Guid Id) {
