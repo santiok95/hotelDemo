@@ -1,22 +1,27 @@
 ﻿using hotelDemo.Data;
+using hotelDemo.Dtos;
+using hotelDemo.Hubs;
 using hotelDemo.Models;
+using hotelDemo.Services;
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace hotelDemo.Controllers
 {
 
-    [Route("api/[controller]")]
+    [Route("api/Bookings")]
     [ApiController]
-    public class BookingsAppController : ControllerBase
+    public class BookingsApiController : ControllerBase
     {
         private readonly HotelContext _context;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public BookingsAppController(HotelContext context)
+        public BookingsApiController(HotelContext context, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
-
+            _hubContext = hubContext;
         }
 
 
@@ -28,10 +33,10 @@ namespace hotelDemo.Controllers
         }
 
         // GET: api/Bookings/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Booking>> GetBooking(Guid id)
+        [HttpGet("{code}")]
+        public async Task<ActionResult<Booking>> GetBooking(string code)
         {
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await _context.Bookings.FirstOrDefaultAsync(x => x.Code == code);
 
             if (booking == null)
             {
@@ -77,9 +82,24 @@ namespace hotelDemo.Controllers
         [HttpPost]
         public async Task<ActionResult<Booking>> PostBooking(Booking booking)
         {
-            _context.Bookings.Add(booking);
+            booking.Code = BookingCodeGenerator.GetBookingCode();
+
+            booking.Status = Booking.BookingStatus.Pending;
+
+
+            var qrStream = QRgenerator.QrGenerator(booking.Code);
+
+
+            var model = new ImageDTO("QRImage", "QRfolder");
+
+            var imageUrl = await FirebaseStorageManager.UploadImage(qrStream, model);
+
+            booking.Url = new Uri(imageUrl);
+
+            await _context.Bookings.AddAsync(booking);
             await _context.SaveChangesAsync();
 
+            await _hubContext.Clients.All.SendAsync("ReceiveBooking", booking);
 
             return CreatedAtAction("GetBooking", new { id = booking.Id }, booking);
         }

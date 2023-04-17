@@ -2,6 +2,7 @@
 using hotelDemo.Dtos;
 using hotelDemo.Models;
 using hotelDemo.Services;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,10 +20,10 @@ namespace hotelDemo.Controllers
         }
 
         public async Task<ActionResult> Index()
-        {   
-            
-            var bookinglist =  await _context.Bookings.ToListAsync();
-            
+        {
+
+            var bookinglist = await _context.Bookings.ToListAsync();
+
             return View(bookinglist);
 
 
@@ -31,7 +32,7 @@ namespace hotelDemo.Controllers
         [HttpGet]
         public async Task<IActionResult> Register()
         {
-            Booking booking = new Booking();
+            Booking booking = new Booking(string.Empty, DateTime.Today, DateTime.Today.AddDays(7), 0);
 
             return View(booking);
         }
@@ -39,31 +40,30 @@ namespace hotelDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(Booking booking)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
 
 
-                booking.Code =  BookingCodeGenerator.GetBookingCode();
+                booking.Code = BookingCodeGenerator.GetBookingCode();
 
                 booking.Status = Booking.BookingStatus.Pending;
 
-                booking.Url = new Uri ($"https://localhost:7114/BookingRegister/Edit/{booking.Id}");
 
-                string qrstring = $"https://localhost:7114/BookingRegister/Edit/{booking.Id}";
+                var qrStream = QRgenerator.QrGenerator(booking.Code);
 
-                var generator = new QRgenerator();
 
                 var model = new ImageDTO("QRImage", "QRfolder");
 
-                await FirebaseStorageManager.UploadImage(generator.QrGenerator(qrstring), model);
+                var imageUrl = await FirebaseStorageManager.UploadImage(qrStream, model);
 
+                booking.Url = new Uri(imageUrl);
 
                 await _context.Bookings.AddAsync(booking);
                 await _context.SaveChangesAsync();
-                
+
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index");
 
 
         }
@@ -73,7 +73,7 @@ namespace hotelDemo.Controllers
         {
             var result = await _context.Bookings.SingleOrDefaultAsync(x => x.Id == Id);
 
-            if (result == null) { return  View(booking); }
+            if (result == null) { return View(booking); }
 
             result.Status = booking.Status;
 
@@ -83,8 +83,9 @@ namespace hotelDemo.Controllers
             return RedirectToAction("Index", "BookingRegister");
         }
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid Id) {
-        
+        public async Task<IActionResult> Edit(Guid Id)
+        {
+
             var viewmodel = await _context.Bookings.SingleOrDefaultAsync(model => model.Id == Id);
             if (viewmodel == null) { return View(null); };
 
@@ -93,9 +94,9 @@ namespace hotelDemo.Controllers
 
 
 
-        
+
         }
-        
+
 
     }
 
@@ -118,7 +119,7 @@ namespace hotelDemo.Controllers
             return code;
         }
 
-        
+
     }
 
 

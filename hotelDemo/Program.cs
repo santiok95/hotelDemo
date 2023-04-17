@@ -1,4 +1,6 @@
 using hotelDemo.Data;
+using hotelDemo.Hubs;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,10 @@ builder.Services.AddDbContext<HotelContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+
+builder.Services.AddCors();
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,14 +30,29 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
+
+app.UseEndpoints(endpoints =>
+{
+
+    endpoints.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    endpoints.MapHub<NotificationHub>("/notificationHub");
+
+});
+
+
+
+
 
 app.Run();

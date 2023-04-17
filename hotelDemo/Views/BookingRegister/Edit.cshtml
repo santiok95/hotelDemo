@@ -6,7 +6,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1> Editar Reservacion de hotelkk</h1>
+<h1> Editar Reservacion de hotel</h1>
 <form asp-controller="BookingRegister" asp-action="Edit" method="post" role="form">
     <div class="text-danger" asp-validation-summary="All"></div>
 
@@ -50,7 +50,7 @@
     <div class="form-group">
         <label asp-for="Url" class="col-md-2"></label>
         <div class="col-md-10">
-            <img src="@Model.Url" asp-for="Url" class="form-control" disabled />
+            <img src="@Model.Url" asp-for="Url" class="form-control" disabled style="width: 380px;" />
         </div>
     </div>
 

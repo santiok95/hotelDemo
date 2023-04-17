@@ -1,5 +1,7 @@
 ﻿using hotelDemo.Models;
+
 using Microsoft.AspNetCore.Mvc;
+
 using System.Diagnostics;
 
 namespace hotelDemo.Controllers
@@ -15,7 +17,7 @@ namespace hotelDemo.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "BookingRegister");
         }
 
         public IActionResult Privacy()
