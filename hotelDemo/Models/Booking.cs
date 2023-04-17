@@ -5,10 +5,9 @@ namespace hotelDemo.Models
 {
     public class Booking
     {
-        public Booking(string code, string name, DateTime from, DateTime to, int people, Uri url)
+        public Booking(string name, DateTime from, DateTime to, int people, Uri url)
         {
 
-            this.Code = code;
             this.Name = name;
             this.From = from;
             this.To = to;

@@ -1,8 +1,11 @@
 ﻿using hotelDemo.Data;
+using hotelDemo.Dtos;
 using hotelDemo.Models;
+using hotelDemo.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static hotelDemo.Models.Booking;
+
+
 
 namespace hotelDemo.Controllers
 {
@@ -38,9 +41,23 @@ namespace hotelDemo.Controllers
         {
             if(ModelState.IsValid)
             {
-               
-                
+
+
+                booking.Code =  BookingCodeGenerator.GetBookingCode();
+
                 booking.Status = Booking.BookingStatus.Pending;
+
+                booking.Url = new Uri ($"https://localhost:7114/BookingRegister/Edit/{booking.Id}");
+
+                string qrstring = $"https://localhost:7114/BookingRegister/Edit/{booking.Id}";
+
+                var generator = new QRgenerator();
+
+                var model = new ImageDTO("QRImage", "QRfolder");
+
+                await FirebaseStorageManager.UploadImage(generator.QrGenerator(qrstring), model);
+
+
                 await _context.Bookings.AddAsync(booking);
                 await _context.SaveChangesAsync();
                 
@@ -81,4 +98,28 @@ namespace hotelDemo.Controllers
         
 
     }
+
+    public static class BookingCodeGenerator
+    {
+        private static readonly Random _random = new Random();
+        private const string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        public static string GetBookingCode()
+        {
+            string code;
+
+            // Genera un código al azar y verifica que tenga al menos un número.
+            do
+            {
+                code = new string(Enumerable.Repeat(_chars, 6)
+                    .Select(s => s[_random.Next(s.Length)]).ToArray());
+            } while (!code.Any(char.IsDigit));
+
+            return code;
+        }
+
+        
+    }
+
+
 }
