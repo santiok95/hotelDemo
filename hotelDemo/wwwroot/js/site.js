@@ -10,7 +10,7 @@ connection.on("ReceiveBooking", function (booking) {
 
     const tabla = $("#table-booking");
     if (tabla) {
-        tabla.append("<tr><td>" + booking.code + "</td><td>" + booking.name + "</td><td>" + formatDate(booking.from) + "</td><td>" + formatDate(booking.to) + "</td><td>" + booking.people + "</td><td>" + getStatus(booking.status) + "</td><td><a href='/BookingRegister/Edit/" + booking.id + "' class='btn btn-primary'>Editar</a></td></tr>");
+        tabla.append("<tr><td>" + booking.code + "</td><td>" + booking.name + "</td><td>" + formatDate(booking.checkIn) + "</td><td>" + formatDate(booking.checkOut) + "</td><td>" + booking.people + "</td><td>" + getStatus(booking.status) + "</td><td><a href='/BookingRegister/Edit/" + booking.id + "' class='btn btn-primary'>Editar</a></td></tr>");
 
     }
 
