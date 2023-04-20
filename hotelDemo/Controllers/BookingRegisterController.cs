@@ -56,7 +56,7 @@ namespace hotelDemo.Controllers
 
                 var imageUrl = await FirebaseStorageManager.UploadImage(qrStream, model);
 
-                booking.Url = new Uri(imageUrl);
+                booking.QR = new Uri(imageUrl);
 
                 await _context.Bookings.AddAsync(booking);
                 await _context.SaveChangesAsync();

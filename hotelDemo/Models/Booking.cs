@@ -5,12 +5,12 @@ namespace hotelDemo.Models
 {
     public class Booking
     {
-        public Booking(string name, DateTime from, DateTime to, int people)
+        public Booking(string name, DateTime checkIn, DateTime checkOut, int people)
         {
 
             this.Name = name;
-            this.From = from;
-            this.To = to;
+            this.CheckIn = checkIn;
+            this.CheckOut = checkOut;
             this.People = people;
         }
         public Booking()
@@ -25,20 +25,20 @@ namespace hotelDemo.Models
         [Display(Name = "Name")]
         public string Name { get; set; }
 
-        [Display(Name = "From")]
+        [Display(Name = "Check In")]
         [DataType(DataType.DateTime)]
-        public DateTime From { get; set; }
+        public DateTime CheckIn { get; set; }
 
-        [Display(Name = "To")]
+        [Display(Name = "Check Out")]
         [DataType(DataType.DateTime)]
-        public DateTime To { get; set; }
+        public DateTime CheckOut { get; set; }
 
         [Display(Name = "People")]
         public int People { get; set; }
 
         [Display(Name = "Url")]
         [DataType(DataType.Url)]
-        public Uri? Url { get; set; }
+        public Uri? QR { get; set; }
 
         public BookingStatus Status { get; set; }
 
