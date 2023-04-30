@@ -46,7 +46,8 @@ namespace hotelDemo.Models
         {
             Pending,
             Confirmed,
-            Canceled
+            Canceled,
+            Archived
         }
 
     }

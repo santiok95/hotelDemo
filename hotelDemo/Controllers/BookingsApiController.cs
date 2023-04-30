@@ -43,7 +43,33 @@ namespace hotelDemo.Controllers
                 return NotFound();
             }
 
+            if (booking.CheckIn < DateTime.Today)
+            {
+                booking.Status = Booking.BookingStatus.Archived;
+            }
+
             return booking;
+        }
+
+
+        // DELETE: api/Bookings/5
+        [HttpDelete("{code}")]
+        public async Task<ActionResult> CancelBooking(string code)
+        {
+            var booking = await _context.Bookings.FirstOrDefaultAsync(x => x.Code == code);
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            booking.Status = Booking.BookingStatus.Canceled;
+
+            _context.Bookings.Update(booking);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         // PUT: api/Bookings/5
@@ -104,21 +130,21 @@ namespace hotelDemo.Controllers
             return CreatedAtAction("GetBooking", new { id = booking.Id }, booking);
         }
 
-        // DELETE: api/Bookings/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBooking(Guid id)
-        {
-            var booking = await _context.Bookings.FindAsync(id);
-            if (booking == null)
-            {
-                return NotFound();
-            }
+        //// DELETE: api/Bookings/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteBooking(Guid id)
+        //{
+        //    var booking = await _context.Bookings.FindAsync(id);
+        //    if (booking == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.Bookings.Remove(booking);
-            await _context.SaveChangesAsync();
+        //    _context.Bookings.Remove(booking);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         private bool BookingExists(Guid id)
         {
